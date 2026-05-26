@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mosaik.js</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js"></script>
+</head>
+
+<body>
+    <div id="app-shell" class="app-shell">
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">Webcam • Tiles • Fullscreen</p>
+                <h1>Mosaik.js</h1>
+                <p class="subtitle">
+                    Capture, segmente e reconstrua o fundo com tiles carregados de uma pasta local.
+                </p>
+            </div>
+            <div class="status-strip">
+                <span id="camera-status" class="status-pill">Câmera iniciando</span>
+                <span id="tiles-status" class="status-pill">Tiles padrão ativos</span>
+                <span id="auto-status" class="status-pill">Ciclo parado</span>
+            </div>
+        </header>
+
+        <main class="workspace">
+            <section class="stage-card panel">
+                <div class="panel-header">
+                    <div>
+                        <h2>Preview do mosaico</h2>
+                        <p>O canvas mostra o mosaico em formação e o resultado final.</p>
+                    </div>
+                    <div id="stage-meta" class="panel-meta">Pronto para capturar</div>
+                </div>
+                <div id="canvas-slot" class="canvas-slot"></div>
+            </section>
+
+            <aside class="sidebar">
+                <section class="panel preview-card">
+                    <div class="panel-header compact">
+                        <div>
+                            <h2>Câmera ao vivo</h2>
+                            <p>Pré-visualização da captura atual.</p>
+                        </div>
+                        <div id="camera-feed-state" class="panel-meta">Aguardando frame</div>
+                    </div>
+                    <div id="camera-slot" class="camera-slot"></div>
+                </section>
+
+                <section class="panel controls-card">
+                    <div class="panel-header compact">
+                        <div>
+                            <h2>Controles</h2>
+                            <p>Configure captura, mosaico e aparência.</p>
+                        </div>
+                    </div>
+
+                    <div class="control-stack">
+                        <div class="control-row file-row">
+                            <button id="pick-folder-button" class="button secondary">Carregar tiles</button>
+                            <input id="tile-folder-input" type="file" webkitdirectory multiple hidden />
+                            <div class="inline-copy">
+                                <strong>Pasta selecionada</strong>
+                                <span id="folder-name">Tiles padrão</span>
+                            </div>
+                        </div>
+
+                        <div class="grid-2">
+                            <label class="field">
+                                <span>Intervalo automático (s)</span>
+                                <input id="interval-input" type="number" min="1" max="3600" step="1" />
+                            </label>
+                            <label class="field">
+                                <span>Preparação (s)</span>
+                                <input id="prep-input" type="number" min="0" max="10" step="1" />
+                            </label>
+                        </div>
+
+                        <div class="grid-2">
+                            <label class="field">
+                                <span>Colunas</span>
+                                <input id="cols-input" type="number" min="4" max="120" step="1" />
+                            </label>
+                            <label class="field">
+                                <span>Linhas</span>
+                                <input id="rows-input" type="number" min="4" max="120" step="1" />
+                            </label>
+                        </div>
+
+                        <label class="checkbox-row">
+                            <input id="fast-input" type="checkbox" />
+                            <span>Modo rápido</span>
+                        </label>
+
+                        <div class="slider-field">
+                            <div class="slider-head">
+                                <span>Brilho</span>
+                                <output id="brightness-value">1.00</output>
+                            </div>
+                            <input id="brightness-input" type="range" min="0.5" max="1.5" step="0.01" />
+                        </div>
+
+                        <div class="slider-field">
+                            <div class="slider-head">
+                                <span>Contraste</span>
+                                <output id="contrast-value">1.00</output>
+                            </div>
+                            <input id="contrast-input" type="range" min="0.5" max="1.8" step="0.01" />
+                        </div>
+
+                        <div class="slider-field">
+                            <div class="slider-head">
+                                <span>Saturação</span>
+                                <output id="saturation-value">1.00</output>
+                            </div>
+                            <input id="saturation-input" type="range" min="0" max="2.5" step="0.01" />
+                        </div>
+
+                        <div class="button-grid">
+                            <button id="auto-toggle-button" class="button primary">Iniciar ciclo</button>
+                            <button id="capture-button" class="button primary">Capture Now</button>
+                            <button id="save-button" class="button secondary">Salvar mosaico</button>
+                            <button id="fullscreen-button" class="button secondary">Fullscreen</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="panel progress-card">
+                    <div class="panel-header compact">
+                        <div>
+                            <h2>Status</h2>
+                            <p>Carregamento, montagem e próximos disparos.</p>
+                        </div>
+                    </div>
+
+                    <div class="progress-stack">
+                        <div class="progress-block">
+                            <div class="progress-head">
+                                <span>Tiles</span>
+                                <span id="tiles-progress-label">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div id="tiles-progress-fill"></div>
+                            </div>
+                        </div>
+
+                        <div class="progress-block">
+                            <div class="progress-head">
+                                <span>Mosaico</span>
+                                <span id="build-progress-label">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div id="build-progress-fill"></div>
+                            </div>
+                        </div>
+
+                        <div class="status-list">
+                            <div><strong>Fase</strong><span id="phase-label">Inicializando</span></div>
+                            <div><strong>Próxima captura</strong><span id="countdown-label">--</span></div>
+                            <div><strong>Última captura</strong><span id="last-capture-label">Nenhuma</span></div>
+                        </div>
+                    </div>
+                </section>
+            </aside>
+        </main>
+    </div>
+
+    <script src="sketch.js"></script>
+</body>
+
+</html>

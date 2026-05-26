@@ -1,0 +1,475 @@
+:root {
+    --bg: #0a0f14;
+    --panel: rgba(15, 23, 32, 0.88);
+    --panel-strong: rgba(19, 29, 39, 0.96);
+    --border: rgba(255, 255, 255, 0.09);
+    --text: #e8eef6;
+    --muted: #9aa7b6;
+    --accent: #7dd3fc;
+    --accent-2: #fbbf24;
+    --danger: #fb7185;
+    --success: #34d399;
+    --shadow: 0 18px 48px rgba(0, 0, 0, 0.36);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+    background:
+        radial-gradient(circle at top left, rgba(125, 211, 252, 0.14), transparent 28%),
+        radial-gradient(circle at top right, rgba(251, 191, 36, 0.11), transparent 26%),
+        linear-gradient(180deg, #071018 0%, #0a0f14 48%, #05080c 100%);
+    color: var(--text);
+    font-family: "Space Grotesk", system-ui, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+button {
+    border: 0;
+    cursor: pointer;
+}
+
+.app-shell {
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    align-items: flex-end;
+}
+
+.eyebrow {
+    margin: 0 0 8px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.76rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+h1,
+h2,
+p {
+    margin: 0;
+}
+
+h1 {
+    font-size: clamp(2rem, 2vw + 1.2rem, 3.2rem);
+    line-height: 1.05;
+}
+
+.subtitle {
+    margin-top: 10px;
+    max-width: 62ch;
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.status-strip {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.status-pill,
+.panel-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text);
+    font-size: 0.82rem;
+    white-space: nowrap;
+}
+
+.workspace {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1.65fr) minmax(320px, 420px);
+    gap: 18px;
+}
+
+.panel {
+    background: linear-gradient(180deg, rgba(17, 25, 34, 0.94), rgba(12, 18, 25, 0.92));
+    border: 1px solid var(--border);
+    border-radius: 26px;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(16px);
+}
+
+.stage-card {
+    min-height: calc(100vh - 140px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.panel-header {
+    padding: 18px 18px 14px;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: start;
+}
+
+.panel-header.compact {
+    padding-bottom: 12px;
+}
+
+.panel-header h2 {
+    font-size: 1.08rem;
+}
+
+.panel-header p {
+    color: var(--muted);
+    font-size: 0.86rem;
+    line-height: 1.4;
+    margin-top: 4px;
+}
+
+.canvas-slot {
+    flex: 1;
+    min-height: 0;
+    padding: 0 18px 18px;
+}
+
+canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 22px;
+    background: #f8fafc;
+}
+
+.sidebar {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.preview-card,
+.controls-card,
+.progress-card {
+    padding-bottom: 18px;
+}
+
+.camera-slot {
+    padding: 0 18px 18px;
+}
+
+.camera-feed {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 20px;
+    display: block;
+    object-fit: cover;
+    background: #091017;
+    transform: scaleX(-1);
+}
+
+.control-stack {
+    padding: 0 18px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.control-row,
+.grid-2,
+.button-grid,
+.status-list,
+.progress-stack {
+    width: 100%;
+}
+
+.file-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 12px;
+    align-items: center;
+}
+
+.inline-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.inline-copy strong,
+.status-list strong {
+    font-size: 0.84rem;
+}
+
+.inline-copy span,
+.status-list span {
+    color: var(--muted);
+    font-size: 0.84rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 0.84rem;
+}
+
+.field input,
+.slider-field input {
+    width: 100%;
+}
+
+.field input[type="number"],
+.button,
+.checkbox-row {
+    height: 44px;
+}
+
+.field input[type="number"],
+.button,
+.slider-field input,
+.checkbox-row {
+    border-radius: 14px;
+}
+
+.field input[type="number"] {
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text);
+    padding: 0 12px;
+    outline: none;
+}
+
+.field input[type="number"]:focus,
+.slider-field input:focus {
+    outline: 2px solid rgba(125, 211, 252, 0.35);
+    outline-offset: 2px;
+}
+
+.checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.04);
+    padding: 0 14px;
+    color: var(--text);
+}
+
+.slider-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.slider-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 0.84rem;
+}
+
+.slider-field input[type="range"] {
+    appearance: none;
+    height: 10px;
+    border: 1px solid var(--border);
+    background: linear-gradient(90deg, rgba(125, 211, 252, 0.28), rgba(251, 191, 36, 0.25));
+    padding: 0;
+    outline: none;
+}
+
+.slider-field input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 3px solid #111827;
+    box-shadow: 0 0 0 4px rgba(125, 211, 252, 0.25);
+}
+
+.button-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.button {
+    min-height: 44px;
+    padding: 0 14px;
+    border-radius: 14px;
+    color: var(--text);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
+}
+
+.button:hover {
+    transform: translateY(-1px);
+}
+
+.button.primary {
+    background: linear-gradient(180deg, rgba(125, 211, 252, 0.22), rgba(56, 189, 248, 0.16));
+    border: 1px solid rgba(125, 211, 252, 0.28);
+}
+
+.button.secondary {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+}
+
+.progress-card {
+    margin-bottom: 0;
+}
+
+.progress-stack {
+    padding: 0 18px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.progress-block {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.progress-head {
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 0.84rem;
+}
+
+.progress-bar {
+    height: 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.07);
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.progress-bar>div {
+    height: 100%;
+    width: 0%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #7dd3fc, #fbbf24);
+    transition: width 170ms ease;
+}
+
+.status-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.status-list>div {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+}
+
+.presentation .app-shell {
+    padding: 0;
+}
+
+.presentation .topbar,
+.presentation .sidebar {
+    display: none;
+}
+
+.presentation .workspace {
+    grid-template-columns: 1fr;
+    gap: 0;
+}
+
+.presentation .stage-card {
+    min-height: 100vh;
+    border-radius: 0;
+    border: 0;
+}
+
+.presentation .canvas-slot {
+    padding: 0;
+}
+
+.presentation canvas {
+    border-radius: 0;
+}
+
+@media (max-width: 1180px) {
+    .workspace {
+        grid-template-columns: 1fr;
+    }
+
+    .stage-card {
+        min-height: 58vh;
+    }
+}
+
+@media (max-width: 760px) {
+    .app-shell {
+        padding: 12px;
+    }
+
+    .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .status-strip {
+        justify-content: flex-start;
+    }
+
+    .grid-2,
+    .button-grid,
+    .file-row {
+        grid-template-columns: 1fr;
+    }
+
+    .stage-card {
+        min-height: 48vh;
+    }
+}
