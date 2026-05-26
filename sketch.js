@@ -496,7 +496,7 @@ async function buildMosaic(captureFrame) {
   let recentTiles = [];
   const yieldEvery = state.settings.fastMode ? 24 : 8;
 
-  mosaicBackground.background(248);
+  mosaicBackground.background(0);
 
   for (let row = 0; row < rows; row += 1) {
     for (let col = 0; col < cols; col += 1) {
@@ -622,7 +622,7 @@ function renderStage() {
     background(8, 15, 20);
     drawScaledGraphic(state.partialGraphic || state.finalGraphic);
   } else if (state.partialGraphic) {
-    background(248);
+    background(0);
     drawScaledGraphic(state.partialGraphic);
   } else {
     background(245);
