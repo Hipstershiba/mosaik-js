@@ -431,6 +431,10 @@ canvas {
     border: 0;
 }
 
+.presentation .panel-header {
+    display: none;
+}
+
 .presentation .canvas-slot {
     padding: 0;
 }
