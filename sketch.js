@@ -299,7 +299,14 @@ function handleFolderSelection(event) {
 }
 
 async function loadTilesFromFiles(files) {
-  const imageFiles = files.filter((file) => isProbablyImage(file));
+  const imageFiles = files
+    .filter((file) => isProbablyImage(file))
+    .map((file) => ({
+      file,
+      relativePath: file.webkitRelativePath || file.name,
+    }))
+    .sort((left, right) => left.relativePath.localeCompare(right.relativePath, "pt-BR", { sensitivity: "base" }));
+
   if (!imageFiles.length) {
     state.tileLoadLabel = "Nenhuma imagem encontrada";
     updateAllUi();
@@ -307,7 +314,7 @@ async function loadTilesFromFiles(files) {
   }
 
   state.currentPhase = "Carregando tiles";
-  state.currentMessage = "Lendo pasta selecionada";
+  state.currentMessage = "Lendo pasta e subpastas selecionadas";
   state.tileLoadTotal = imageFiles.length;
   state.tileLoadDone = 0;
   state.userTiles = [];
@@ -315,8 +322,8 @@ async function loadTilesFromFiles(files) {
 
   const loaded = [];
   await Promise.all(
-    imageFiles.map(async (file) => {
-      const tile = await loadTileFile(file);
+    imageFiles.map(async ({ file, relativePath }) => {
+      const tile = await loadTileFile(file, relativePath);
       state.tileLoadDone += 1;
       if (tile) {
         loaded.push(tile);
@@ -328,12 +335,12 @@ async function loadTilesFromFiles(files) {
   state.userTiles = loaded;
   state.tileLoadLabel = loaded.length ? `${loaded.length} tiles carregados` : "Falha ao carregar tiles";
   state.currentPhase = loaded.length ? "Tiles prontos" : "Pronto";
-  state.currentMessage = loaded.length ? "Tiles disponíveis para mosaico" : "Mantendo tiles padrão";
+  state.currentMessage = loaded.length ? "Tiles e subpastas disponíveis para mosaico" : "Mantendo tiles padrão";
   rebuildTileSet();
   persistSettings();
 }
 
-async function loadTileFile(file) {
+async function loadTileFile(file, relativePath) {
   const url = URL.createObjectURL(file);
   try {
     const image = await loadImageAsync(url);
@@ -346,8 +353,9 @@ async function loadTileFile(file) {
     }
     const avg = readAverageColor(image);
     return {
-      id: `${file.name}-${file.size}-${file.lastModified}`,
+      id: `${relativePath}-${file.size}-${file.lastModified}`,
       name: file.name,
+      relativePath,
       image,
       avg,
       luma: colorLuma(avg),
